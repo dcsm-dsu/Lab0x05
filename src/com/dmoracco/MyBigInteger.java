@@ -88,8 +88,56 @@ public class MyBigInteger {
     }
 
     public MyBigInteger Times(MyBigInteger x){
-        MyBigInteger returnValue = new MyBigInteger("0");
 
-        return returnValue;
+        if (this.Value.length() > x.Value.length()){
+             return bigMultiply(this, x);
+        } else {
+            return bigMultiply(x, this);
+        }
+    }
+
+    private MyBigInteger bigMultiply(MyBigInteger largerInt, MyBigInteger smallerInt){
+        MyBigInteger rv = new MyBigInteger("0");
+
+        String sum;
+        int product, carry;
+
+        int smaller = smallerInt.Value.length();
+        int larger = largerInt.Value.length();
+
+        System.out.printf("  %s\n  %s\n-----------------------------\n", largerInt.Value, smallerInt.Value);
+
+        for (int i = 0; i < smaller; i++){      // Iterate over smaller string of digits
+            carry = 0;
+            sum = "";
+            for (int j = 0; j < larger; j++){   // Iterate over larger string of digits
+                // Convert and multiply
+                product = ((smallerInt.Value.toCharArray()[smaller-1-i]-48) *
+                        (largerInt.Value.toCharArray()[larger-1-j]-48)) +carry;
+                // Handle carry
+                if (product >= 10){
+                    carry = product / 10;
+                    product = product % 10;
+                }
+                // Convert back to string
+                sum = ((char)(product+48)) + sum;
+            }
+            // Handle last carry
+            if (carry > 0){
+                sum = carry + sum;
+            }
+            // Handle powers of ten without conversion
+            for (int k = i; k > 0; k--){
+                sum = sum + "0";
+            }
+            System.out.printf("  %s\n+", sum);
+            // Convert sum to BigInt
+            MyBigInteger s = new MyBigInteger(sum);
+            // Add to overall total using bigInt
+            rv = rv.Plus(s);
+            System.out.println("     subtotal: " + rv.Value);
+        }
+        System.out.printf("--------------------------------\n  %s\n", rv.Value);
+        return rv;
     }
 }
