@@ -48,11 +48,6 @@ public class Main {
             if (fibrecur && lastRecurTime < maxTime){
                 for (z = 0; z < 10; z++){
                     startTime = getCpuTime();
-                    if (FibRecur(inputNumber) < 0){
-                        fibrecur = false;
-                        overflow = true;
-                        break;
-                    }
                     endTime = getCpuTime();
                     total = total + ((endTime-startTime)/1000); // converted to ms then added
                 }
@@ -218,9 +213,12 @@ public class Main {
     }
 
 
-    public static long FibRecur(long number){
-        if (number < 2) return number;
+    public static MyBigInteger FibRecur(long number){
+/*
+        if (number.Value == "0" || number.Value == "1") return number;
         else return FibRecur(number-1)+FibRecur(number-2);
+*/
+        return null;
     }
 
     public static long FibCache(long number){

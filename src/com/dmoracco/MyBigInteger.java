@@ -1,9 +1,10 @@
 package com.dmoracco;
 
 public class MyBigInteger {
-    public String Value;
-    public boolean Negative;
+    private String value;
+    private boolean Negative;
 
+    // TODO: Handle all cases of negative integers, currently only handles enough to process Fib numbers
     MyBigInteger(String value){
         // Validate string value
         if (null == value) throw new NumberFormatException("BigInteger created with null value");
@@ -17,7 +18,7 @@ public class MyBigInteger {
             if(!Character.isDigit(number)) throw new NumberFormatException("BigInteger created with bad string");
         }
 
-        this.Value = value;
+        this.value = value;
     }
 
     public MyBigInteger Plus(MyBigInteger x){
@@ -25,71 +26,89 @@ public class MyBigInteger {
         int carry = 0;
         String rv = "";
 
-        for (int i = 0; i < Math.max(this.Value.length(), x.Value.length()); i++){
-
-            // pad the shorter number with leading zeros
-            int diff = 0;
-            String padding = "";
-
-            if (this.Value.length() < x.Value.length()){
-                diff = x.Value.length() - this.Value.length();
-                for (int it = 0; it < diff; it++){
-                    this.Value = "0" + this.Value;
-                }
-            } else if (this.Value.length() > x.Value.length()){
-                diff = this.Value.length() - x.Value.length();
-                for (int ix = 0; ix < diff; ix++){
-                    x.Value = "0" + x.Value;
-                }
-
+        // pad the shorter number with leading zeros
+        int diff = 0;
+        String padding = "";
+        if (this.value.length() < x.value.length()){
+            diff = x.value.length() - this.value.length();
+            for (int it = 0; it < diff; it++){
+                this.value = "0" + this.value;
             }
+        } else if (this.value.length() > x.value.length()){
+            diff = this.value.length() - x.value.length();
+            for (int ix = 0; ix < diff; ix++){
+                x.value = "0" + x.value;
+            }
+
+        }
+
+        boolean negativeFlag = this.Negative;
+        for (int i = 0; i < Math.max(this.value.length(), x.value.length()); i++){
+
             // Convert A
-            a = this.Value.toCharArray()[Math.max(this.Value.length(), x.Value.length()) - i -1] - 48;
-            //if (this.Negative) a = 0 - a;
+            a = this.value.toCharArray()[Math.max(this.value.length(), x.value.length()) - i -1] - 48;
+            if (this.Negative) a = 0 - a;
             // Convert B
-            b = x.Value.toCharArray()[Math.max(this.Value.length(), x.Value.length()) - i - 1] - 48;
-            //if (x.Negative) b = 0 - b;
+            b = x.value.toCharArray()[Math.max(this.value.length(), x.value.length()) - i - 1] - 48;
+            if (x.Negative) b = 0 - b;
             // Sum A and B and carry
             sum = a + b + carry;
             // Handle carry
             if (sum >= 10){
                 carry = 1;
                 sum = sum - 10;
+            } else if (sum < 0){
+                carry = -1;
+                sum = sum + 10;
             } else {
                 carry = 0;
             }
+
+/*
+            // Handle negative flag -- note: last operation that changes Negative flag should determine final polarity
+            // Don't change if 0
+            if (sum < 0){
+                sum = Math.abs(sum);
+                negativeFlag = true;
+            } else if (sum > 0){
+                negativeFlag = false;
+            }
+*/
 
             // Convert to string
             rv = (char)(sum+48) + rv;
 
 
         }
+        // Handle final carry
         if (carry == 1){
             rv = "1" + rv;
+        } else if (carry == -1){
+            this.Negative = true;
+
         }
-/*
-        if (carry == 1){
-            if (rv.indexOf(0) == 9+48){
-                rv.toCharArray()[0] = 48; //as in 0
-                rv = "1" + rv;
-            } else {
-                rv.toCharArray()[0] = rv.toCharArray()[0]++; // increment value by one
-            }
+
+        // Handle extra padding
+        while (rv.length() > 1 && rv.toCharArray()[0] == '0'){
+            rv = rv.substring(1);
         }
-*/
+
         // Handle negative final sum
-/*
-        if (sum < 0){
+        if (negativeFlag){
             rv = "-" + rv;
         }
-        System.out.println(rv);
-*/
+
         return new MyBigInteger(rv);
+    }
+
+    public MyBigInteger Plus(String x){
+        MyBigInteger newBigint = new MyBigInteger(x);
+        return this.Plus(newBigint);
     }
 
     public MyBigInteger Times(MyBigInteger x){
 
-        if (this.Value.length() > x.Value.length()){
+        if (this.value.length() > x.value.length()){
              return bigMultiply(this, x);
         } else {
             return bigMultiply(x, this);
@@ -102,18 +121,18 @@ public class MyBigInteger {
         String sum;
         int product, carry;
 
-        int smaller = smallerInt.Value.length();
-        int larger = largerInt.Value.length();
+        int smaller = smallerInt.value.length();
+        int larger = largerInt.value.length();
 
-        System.out.printf("  %s\n  %s\n-----------------------------\n", largerInt.Value, smallerInt.Value);
+        System.out.printf("  %s\n  %s\n-----------------------------\n", largerInt.value, smallerInt.value);
 
         for (int i = 0; i < smaller; i++){      // Iterate over smaller string of digits
             carry = 0;
             sum = "";
             for (int j = 0; j < larger; j++){   // Iterate over larger string of digits
                 // Convert and multiply
-                product = ((smallerInt.Value.toCharArray()[smaller-1-i]-48) *
-                        (largerInt.Value.toCharArray()[larger-1-j]-48)) +carry;
+                product = ((smallerInt.value.toCharArray()[smaller-1-i]-48) *
+                        (largerInt.value.toCharArray()[larger-1-j]-48)) +carry;
                 // Handle carry
                 if (product >= 10){
                     carry = product / 10;
@@ -135,9 +154,15 @@ public class MyBigInteger {
             MyBigInteger s = new MyBigInteger(sum);
             // Add to overall total using bigInt
             rv = rv.Plus(s);
-            System.out.println("     subtotal: " + rv.Value);
+            System.out.println("     subtotal: " + rv.value);
         }
-        System.out.printf("--------------------------------\n  %s\n", rv.Value);
+        System.out.printf("--------------------------------\n  %s\n", rv.value);
         return rv;
+    }
+
+    public String Value(){
+        if (this.Negative == false){
+            return this.value;
+        } else return "-" + this.value;
     }
 }
