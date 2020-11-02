@@ -192,16 +192,17 @@ public class Main {
         System.out.println("Validating Algorithms:");
 
         int tests = 9;
+        MyBigInteger test;
         System.out.printf("\n\t%s\n", "Testing FibRecur");
         for (int t = 0; t <= tests; t++){
-            MyBigInteger test = new MyBigInteger("" + (char)(t+48));
-            //System.out.print(test.Value());
+            test = new MyBigInteger("" + (char)(t+48));
             System.out.printf("\t%d: %s", t, FibRecur(test).Value());
         }
         //System.out.println("f(92): " + FibRecur(47));
         System.out.printf("\n\t%s\n", "Testing FibCache");
         for (int s = 0; s <= tests; s++){
-            System.out.printf("\t%d: %d, ", s, FibCache(s));
+            test = new MyBigInteger("" + (char)(s+48));
+            System.out.printf("\t%d: %s, ", s, FibCache(test).Value());
         }
         //System.out.println("f(92): " + FibCache(47));
         System.out.printf("\n\t%s\n", "Testing FibLoop");
@@ -221,30 +222,28 @@ public class Main {
         if (number.Value().equals("0") || number.Value().equals("1")) return number;
         else{
             MyBigInteger previousOne = FibRecur(number.Plus("-1"));
-            //System.out.println("previousone: " + previousOne.Value());
             MyBigInteger previousTwo = FibRecur(number.Plus("-2"));
-            //System.out.println("previoustwo: " + previousTwo.Value());
-            //MyBigInteger
             return previousOne.Plus(previousTwo);
         }
     }
 
-    public static long FibCache(long number){
+    public static MyBigInteger FibCache(MyBigInteger number){
         // Initialize table
-        Hashtable<Long, Long> resultsCache = new Hashtable<Long,Long>();
+        Hashtable<String, MyBigInteger> resultsCache = new Hashtable<String,MyBigInteger>();
 
         return fibCacheHelper(number, resultsCache);
     }
 
-    public static long fibCacheHelper(long number, Hashtable<Long, Long> resultsCache){
-        if (number < 2) return number; // skip 0, 1
-        else if (resultsCache.get(number) != null){
-            return resultsCache.get(number);
+    public static MyBigInteger fibCacheHelper(MyBigInteger number, Hashtable<String, MyBigInteger> resultsCache){
+        if (number.Value().equals("0") || number.Value().equals("1")) return number;
+        else if (resultsCache.get(number.Value()) != null){
+            return resultsCache.get(number.Value());
         }
         else { // otherwise, find and fill in result, then return.
-            resultsCache.put(number, (fibCacheHelper(number-1, resultsCache) +
-                    (fibCacheHelper(number-2, resultsCache))));
-            return resultsCache.get(number);
+            MyBigInteger previousOne = fibCacheHelper(number.Plus("-1"), resultsCache);
+            MyBigInteger previousTwo = fibCacheHelper(number.Plus("-2"), resultsCache);
+            resultsCache.put(number.Value(), previousOne.Plus(previousTwo));
+            return resultsCache.get(number.Value());
         }
     }
 
