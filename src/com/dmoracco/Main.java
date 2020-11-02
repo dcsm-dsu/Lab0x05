@@ -207,7 +207,8 @@ public class Main {
         //System.out.println("f(92): " + FibCache(47));
         System.out.printf("\n\t%s\n", "Testing FibLoop");
         for (int r = 0; r <= tests; r++){
-            System.out.printf("\t%d: %d, ", r,  FibLoop(r));
+            test = new MyBigInteger("" + (char)(r+48));
+            System.out.printf("\t%d: %s, ", r,  FibLoop(test).Value());
         }
         //System.out.println("f(92): " + FibLoop(47));
         System.out.printf("\n\t%s\n", "Testing FibMatrix1");
@@ -247,18 +248,22 @@ public class Main {
         }
     }
 
-    public static long FibLoop(long number){
-        long A = 0;
-        long B = 1;
-        long next = 0;
+    public static MyBigInteger FibLoop(MyBigInteger number){
+        MyBigInteger A = new MyBigInteger("0");
+        MyBigInteger B = new MyBigInteger("1");
+        MyBigInteger next = new MyBigInteger("0");
 
         // skip 0, 1
-        if (number < 2) return number;
+        if (number.Value().equals("0") || number.Value().equals("1")) return number;
         // Loop through storing the values for last two in sequence.
-        for (long i = 2; i <= number; i++){
-            next = A + B;
+        MyBigInteger i = new MyBigInteger("2");
+        MyBigInteger end = number.Plus("1"); // for terminator
+        // for loop replacement for BigInts
+        while (!i.Value().equals(end.Value())){
+            next = A.Plus(B);
             A = B;
             B = next;
+            i = i.Plus("1"); //i++
         }
 
         return next;
