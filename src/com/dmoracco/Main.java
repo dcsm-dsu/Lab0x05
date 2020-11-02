@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 import static com.dmoracco.GetCpuTime.getCpuTime;
+import static com.dmoracco.MyBigInteger.*;
 
 public class Main {
 
     public static void main(String[] args) {
-
         validate();
 
+/*
         // Testing
         boolean fibrecur = true, fibcache = true, fibloop = true, fibmatrix = true;
         int maxX = 200;
@@ -184,15 +185,18 @@ public class Main {
             System.out.printf("\n");
             inputNumber++;
         }
+*/
     }
 
     public static void validate(){
         System.out.println("Validating Algorithms:");
 
-        int tests = 10;
+        int tests = 9;
         System.out.printf("\n\t%s\n", "Testing FibRecur");
         for (int t = 0; t <= tests; t++){
-            System.out.printf("\t%d: %d", t, FibRecur(t));
+            MyBigInteger test = new MyBigInteger("" + (char)(t+48));
+            //System.out.print(test.Value());
+            System.out.printf("\t%d: %s", t, FibRecur(test).Value());
         }
         //System.out.println("f(92): " + FibRecur(47));
         System.out.printf("\n\t%s\n", "Testing FibCache");
@@ -213,12 +217,16 @@ public class Main {
     }
 
 
-    public static MyBigInteger FibRecur(long number){
-/*
-        if (number.Value == "0" || number.Value == "1") return number;
-        else return FibRecur(number-1)+FibRecur(number-2);
-*/
-        return null;
+    public static MyBigInteger FibRecur(MyBigInteger number){
+        if (number.Value().equals("0") || number.Value().equals("1")) return number;
+        else{
+            MyBigInteger previousOne = FibRecur(number.Plus("-1"));
+            //System.out.println("previousone: " + previousOne.Value());
+            MyBigInteger previousTwo = FibRecur(number.Plus("-2"));
+            //System.out.println("previoustwo: " + previousTwo.Value());
+            //MyBigInteger
+            return previousOne.Plus(previousTwo);
+        }
     }
 
     public static long FibCache(long number){
