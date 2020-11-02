@@ -1,5 +1,7 @@
 package com.dmoracco;
 
+import java.util.Random;
+
 public class MyBigInteger {
     private String value;
     private boolean Negative;
@@ -19,6 +21,18 @@ public class MyBigInteger {
         }
 
         this.value = value;
+    }
+
+    MyBigInteger(int expectedSize){
+        Random r = new Random();
+        int rDigit;
+        String rValue = "";
+        for (int i = 0; i < expectedSize; i++){
+            rDigit = r.nextInt(9);
+            rValue = (char)(rDigit+48) + rValue;
+        }
+        this.value = rValue;
+        this.Negative = false;
     }
 
     public MyBigInteger Plus(MyBigInteger x){
@@ -63,17 +77,6 @@ public class MyBigInteger {
             } else {
                 carry = 0;
             }
-
-/*
-            // Handle negative flag -- note: last operation that changes Negative flag should determine final polarity
-            // Don't change if 0
-            if (sum < 0){
-                sum = Math.abs(sum);
-                negativeFlag = true;
-            } else if (sum > 0){
-                negativeFlag = false;
-            }
-*/
 
             // Convert to string
             rv = (char)(sum+48) + rv;
@@ -165,4 +168,5 @@ public class MyBigInteger {
             return this.value;
         } else return "-" + this.value;
     }
+
 }
