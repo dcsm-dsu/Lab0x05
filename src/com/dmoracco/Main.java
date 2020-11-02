@@ -212,8 +212,9 @@ public class Main {
         }
         //System.out.println("f(92): " + FibLoop(47));
         System.out.printf("\n\t%s\n", "Testing FibMatrix1");
-        for (int r = 0; r <= tests; r++){
-            System.out.printf("\t%d: %d, ", r, FibMatrix1(r));
+        for (int q = 0; q <= tests; q++){
+            test = new MyBigInteger("" + (char)(q+48));
+            System.out.printf("\t%d: %s, ", q, FibMatrix1(test).Value());
         }
         //System.out.println("f(92): " + FibMatrix1(47));
     }
@@ -269,29 +270,38 @@ public class Main {
         return next;
     }
 
-    public static long FibMatrix1(long number){
+    public static MyBigInteger FibMatrix1(MyBigInteger number){
 
-        if (number == 0) return 0;
+        if (number.Value().equals("0") || number.Value().equals("1")) return number;
 
         // Create base matrix
-        long[][] matrix = {{1, 1}, {1, 0}};
+        //long[][] matrix = {{1, 1}, {1, 0}};
+        MyBigInteger A = new MyBigInteger("1");
+        MyBigInteger B = new MyBigInteger("1");
+        MyBigInteger C = new MyBigInteger("1");
+        MyBigInteger D = new MyBigInteger("0");
+        MyBigInteger[][] matrix = {{A, B}, {C, D}};
 
         // Iterate through x-2 powers of base matrix
-        for (long i = 0; i < number-2; i++){
+        MyBigInteger i = new MyBigInteger("0");
+        MyBigInteger end = number.Plus("-2"); // for terminator
+        // for loop replacement for BigInts
+        while (!i.Value().equals(end.Value())){
             fibMatrixMultiply(matrix);
+            i = i.Plus("1"); //i++
         }
 
         // return top left element of matrix
         return matrix[0][0];
     }
 
-    public static void fibMatrixMultiply(long[][] matrix){
+    public static void fibMatrixMultiply(MyBigInteger[][] matrix){
         // multiply provided 2x2 matrix by the Fibonacci base matrix
         // note: I got rid of the unnecessary arithmetic, though this would likely have been optimized anyway.
-        long tl = matrix[0][0] + matrix[0][1];
-        long tr = matrix[0][0];
-        long bl = matrix[0][0] + matrix[0][1];
-        long br = matrix[0][0];
+        MyBigInteger tl = matrix[0][0].Plus(matrix[0][1]);
+        MyBigInteger tr = matrix[0][0];
+        MyBigInteger bl = matrix[0][0].Plus(matrix[0][1]);
+        MyBigInteger br = matrix[0][0];
 
         matrix[0][0] = tl;
         matrix[0][1] = tr;
