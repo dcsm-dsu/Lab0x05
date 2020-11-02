@@ -11,7 +11,6 @@ public class Main {
     public static void main(String[] args) {
         validate();
 
-/*
         // Testing
         boolean fibrecur = true, fibcache = true, fibloop = true, fibmatrix = true;
         int maxX = 200;
@@ -43,12 +42,14 @@ public class Main {
             long total = 0;
             boolean overflow;
 
+            MyBigInteger input = new MyBigInteger(Integer.toString(inputNumber));
 
             //FibRecur
             overflow = false;
             if (fibrecur && lastRecurTime < maxTime){
                 for (z = 0; z < 10; z++){
                     startTime = getCpuTime();
+                    FibRecur(input);
                     endTime = getCpuTime();
                     total = total + ((endTime-startTime)/1000); // converted to ms then added
                 }
@@ -70,11 +71,7 @@ public class Main {
             if (fibcache && lastCacheTime < maxTime){
                 for (z = 0; z < 10000; z++){
                     startTime = getCpuTime();
-                    if(FibCache(inputNumber) < 0){
-                        fibcache = false;
-                        overflow = true;
-                        break;
-                    }
+                    FibCache(input);
                     endTime = getCpuTime();
                     total = total + ((endTime-startTime));
                 }
@@ -96,11 +93,7 @@ public class Main {
             if (fibloop && lastLoopTime < maxTime){
                 for (z = 0; z < 10000; z++){
                     startTime = getCpuTime();
-                    if(FibLoop(inputNumber) < 0){
-                        fibloop = false;
-                        overflow = true;
-                        break;
-                    }
+                    FibLoop(input);
                     endTime = getCpuTime();
                     total = total + ((endTime-startTime));
                 }
@@ -122,11 +115,7 @@ public class Main {
             if (fibmatrix && lastMatrixTime < maxTime){
                 for (z = 0; z < 10000; z++){
                     startTime = getCpuTime();
-                    if(FibMatrix1(inputNumber)< 0 ){
-                        overflow = true;
-                        fibmatrix = false;
-                        break;
-                    }
+                    FibMatrix1(input);
                     endTime = getCpuTime();
                     total = total + ((endTime-startTime));
                 }
@@ -185,7 +174,6 @@ public class Main {
             System.out.printf("\n");
             inputNumber++;
         }
-*/
     }
 
     public static void validate(){
@@ -198,25 +186,27 @@ public class Main {
             test = new MyBigInteger("" + (char)(t+48));
             System.out.printf("\t%d: %s", t, FibRecur(test).Value());
         }
-        //System.out.println("f(92): " + FibRecur(47));
         System.out.printf("\n\t%s\n", "Testing FibCache");
         for (int s = 0; s <= tests; s++){
             test = new MyBigInteger("" + (char)(s+48));
             System.out.printf("\t%d: %s, ", s, FibCache(test).Value());
         }
-        //System.out.println("f(92): " + FibCache(47));
+        System.out.println();
+        System.out.println("f(1000): " + FibCache(new MyBigInteger("1000")).Value());
         System.out.printf("\n\t%s\n", "Testing FibLoop");
         for (int r = 0; r <= tests; r++){
             test = new MyBigInteger("" + (char)(r+48));
             System.out.printf("\t%d: %s, ", r,  FibLoop(test).Value());
         }
-        //System.out.println("f(92): " + FibLoop(47));
+        System.out.println();
+        System.out.println("f(1000): " + FibLoop(new MyBigInteger("1000")).Value());
         System.out.printf("\n\t%s\n", "Testing FibMatrix1");
         for (int q = 0; q <= tests; q++){
             test = new MyBigInteger("" + (char)(q+48));
             System.out.printf("\t%d: %s, ", q, FibMatrix1(test).Value());
         }
-        //System.out.println("f(92): " + FibMatrix1(47));
+        System.out.println();
+        System.out.println("f(1000): " + FibMatrix1(new MyBigInteger("1000")).Value());
     }
 
 
